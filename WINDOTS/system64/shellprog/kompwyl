@@ -1,0 +1,7 @@
+-- wylaczanie komputera
+
+local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+plik.writeLine("CPROMPT")
+plik.close()
+
+os.shutdown()

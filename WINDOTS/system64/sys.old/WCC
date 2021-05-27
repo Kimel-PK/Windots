@@ -1,0 +1,30 @@
+-- Windots Command Center
+
+while true do
+
+  local plik = fs.open("/WINDOTS/system64/config/cmd", "r")
+  local cmd = plik.readLine()
+  plik.close()
+
+  if cmd == "LOG" then
+    shell.run("/WINDOTS/system64/log")
+  elseif cmd == "GUI" then
+    shell.run("/WINDOTS/system64/gui")
+  elseif cmd == "EXPRO" then
+    shell.run("/WINDOTS/system64/expl")
+  elseif cmd == "EXDOK" then
+    shell.run("/WINDOTS/system64/expl")
+  elseif cmd == "EXOBR" then
+    shell.run("/WINDOTS/system64/expl")
+  elseif cmd == "EXGRY" then
+    shell.run("/WINDOTS/system64/expl")
+  elseif cmd == "CFG" then
+    shell.run("/WINDOTS/system64/cfg")
+  elseif cmd == "CPROMPT" then
+    break
+  elseif cmd == "R" then
+    shell.run("/WINDOTS/system64/shellprog/kompres")
+  elseif cmd == "S" then
+    shell.run("/WINDOTS/system64/shellprog/kompwyl")
+  end
+end

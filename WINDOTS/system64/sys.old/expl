@@ -1,0 +1,235 @@
+-- explorator plikow
+
+-- odczytanie koloru czcionki (oba) z pliku
+
+local plik = fs.open("/WINDOTS/system64/config/guitextcolor", "r")
+kolorczcipod = tonumber(plik.readLine())
+kolorczcitext = tonumber(plik.readLine())
+plik.close()
+
+-- odczytanie koloru tla (podstawowy) z pliku
+
+local plik = fs.open("/WINDOTS/system64/config/guicolor", "r")
+kolortlapod = tonumber(plik.readLine())
+plik.close()
+
+-- zmienne sterujace
+
+local przegl = false
+local narzed = false
+local paint = false
+local word = false
+local sciezka = {}
+local pozycja = 0
+
+-- wczytywanie trybu
+
+local plik = fs.open("/WINDOTS/system64/config/cmd", "r")
+local tryb = plik.readLine()
+plik.close()
+
+if tryb == "EXPRO" then
+  przegl = true
+  narzed = true
+  paint = false
+  word = false
+  sciezka = {"WINDOTS/", "LocalFiles/", "Programs/"}
+elseif tryb == "EXDOK" then
+  przegl = true
+  narzed = true
+  paint = false
+  word = true
+  sciezka = {"/", "USER/", "Dokumenty/"}
+elseif tryb == "EXOBR" then
+  przegl = false
+  narzed = false
+  paint = true
+  word = false
+  sciezka = {"/", "USER/", "Obrazy/"}
+elseif tryb == "EXGRY" then
+  przegl = false
+  narzed = false
+  paint = false
+  word = false
+  sciezka = {"/", "WINDOTS/", "LocalFiles/", "Games/"}
+end
+
+-- funkcje
+
+-- skrot do pozycji kursora
+
+function CPos(x, y)
+term.setCursorPos(x, y)
+end
+
+-- skrot do koloru tekstu
+
+function CTCol(kolor)
+term.setTextColor(kolor)
+end
+
+-- skrot do koloru tla
+
+function CBCol(kolor)
+term.setBackgroundColor(tonumber(kolor))
+end
+
+-- rysowanie paska dowolnej dlugosci
+
+function pasek(dlugosc, kolor)
+
+  local kursorwyjx, kursorwyjy = term.getCursorPos()
+  for i=1, dlugosc do
+    CBCol(kolor)
+    write(" ")
+  end
+  term.setCursorPos(kursorwyjx, kursorwyjy)
+
+end
+
+-- /funkcje
+
+-- rysowanie menu
+
+while true do
+
+  CBCol(colors.lightGray)
+  CTCol(kolorczcitext)
+  term.clear()
+  
+  CBCol(colors.white)
+  for i=4, 17 do
+    CPos(5,i)
+    write("                  |          ")
+  end
+  CBCol(colors.lightGray)
+  
+  local ind = 2
+  lista = {{"..", "DIR"}}
+  listalok = {}
+  listaplk = {}
+  local sciezkastr = "/"
+  for i=1, #sciezka do
+    sciezkastr = sciezkastr..sciezka[i]
+  end
+  listaA = fs.list(sciezkastr)
+  if przegl == true then
+    for i=1, #listaA do
+      if fs.isDir(sciezkastr..listaA[i]) == true then
+        listalok[#listalok+1] = listaA[i]
+      else
+        listaplk[#listaplk+1] = listaA[i]
+      end
+    end
+    for i=1, #listalok do
+      lista[ind] = {tostring(listalok[i]), "DIR"}
+      ind = ind + 1
+    end
+    for i=1, #listaplk do
+      lista[ind] = {tostring(listaplk[i]), "PLK"}
+      ind = ind + 1
+    end
+  else
+    for i=1, #listaA do
+      if fs.isDir(sciezkastr..listaA[i]) == false then
+        listaplk[#listaplk+1] = listaA[i]
+      end
+    end
+    for i=1, #listaplk do
+      lista[ind] = {tostring(listaplk[i]), "PLK"}
+      ind = ind + 1
+    end
+  end
+  
+  CPos(5,3-pozycja)
+  CBCol(colors.white)
+  for i=1, #lista do
+    local x, y = term.getCursorPos()
+    if lista[i][2] == "DIR" then
+      CPos(5,y+1)
+      CTCol(colors.lime)
+      write(lista[i][1])
+      CPos(25,y+1)
+      write("Folder")
+    else
+      CPos(5,y+1)
+      CTCol(kolorczcitext)
+      write(lista[i][1])
+      CPos(25,y+1)
+      write(fs.getSize(sciezkastr..lista[i][1]))
+    end
+  end
+  
+  CTCol(kolorczcitext)
+  CBCol(colors.lightGray)
+  CPos(1,2)
+  term.clearLine()
+  CPos(1,18)
+  term.clearLine()
+  CPos(2,3)
+  write("/")
+  write(string.char(92))
+  write(" NAZWA               ROZMIAR")
+  CPos(2,17)
+  write(string.char(92))
+  write("/")
+
+  CPos(1,1)
+  pasek(51,kolortlapod)
+  CPos(1,19)
+  pasek(51,kolortlapod)
+  CBCol(colors.green)
+  CTCol(kolorczcipod)
+  write("POWROT")
+  CPos(2,1)
+  CBCol(kolortlapod)
+  write(sciezkastr)
+  
+  if narzed == true then
+    CPos(36,5)
+    CTCol(kolorczcitext)
+    CBCol(colors.lightGray)
+    if tryb == "EXPRO" then
+      write("Nowy program")
+    else
+      write("Nowy dokument")
+    end
+    CPos(36,6)
+    write("Zmien nazwe")
+    CPos(36,7)
+    write("Wytnij")
+    CPos(36,8)
+    write("Kopiuj")
+    CPos(36,9)
+    write("Wklej")
+    CPos(36,11)
+    write("Usun")
+  else
+    CPos(36,5)
+    CTCol(kolorczcitext)
+    CBCol(colors.lightGray)
+    write("Zmien nazwe")
+    CPos(36,7)
+    write("Usun")
+  end
+  
+  zdarzenie, typ, pozx, pozy = os.pullEvent()
+  if zdarzenie == "mouse_click" then
+  
+    if pozy == 3 and (pozx == 2 or pozx == 3) then
+      pozycja = pozycja - 1
+      if pozycja == -1 then
+        pozycja = 0
+      end
+    elseif pozy == 17 and (pozx == 2 or pozx == 3) then
+      if #lista - 12 > pozycja + 1 then
+        pozycja = pozycja + 1
+      end
+    elseif pozy == 19 and pozx <= 6 then
+      local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+      plik.writeLine("GUI")
+      plik.close()
+      break
+    end
+  end
+end

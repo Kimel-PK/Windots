@@ -1,0 +1,300 @@
+-- zmienne
+
+local argumenty = {...}
+local sciezka = shell.resolve(argumenty[1])
+local doodczytu = fs.isReadOnly(sciezka)
+local kolorLPM = colors.black
+local kolorPPM = colors.white
+local temp = nil
+local plotno = {}
+local rzad = 1
+
+-- funkcje
+
+-- skróty terminala
+
+function cs()
+	term.clear()
+end
+
+function CPos(Cx, Cy)
+	term.setCursorPos(Cx, Cy)
+end
+
+function CBCol (kolortla)
+	term.setBackgroundColor(kolortla)
+end
+
+function CTCol (kolortekstu)
+	term.setTextColor(kolortekstu)
+end
+
+-- rysowanie paska
+
+function pasek(kolor)
+
+  local kursorwyjx, kursorwyjy = term.getCursorPos()
+  for i=1, 52 do
+    CBCol(kolor)
+    write(" ")
+  end
+  term.setCursorPos(kursorwyjx, kursorwyjy)
+
+end
+
+-- rysuj z symbolu
+
+function rysuj(symbol)
+
+	if symbol == "N" then
+		if kolorLPM == "N" or kolorPPM == "N" then
+			CBCol(colors.white)
+			CTCol(colors.lightGray)
+			write("-")
+		else
+			CBCol(colors.white)
+			write(" ")
+		end
+	elseif symbol == "0" then
+		CBCol(colors.white)
+		write(" ")
+	elseif symbol == "1" then
+		CBCol(colors.orange)
+		write(" ")
+	elseif symbol == "2" then
+		CBCol(colors.magenta)
+		write(" ")
+	elseif symbol == "3" then
+		CBCol(colors.lightBlue)
+		write(" ")
+	elseif symbol == "4" then
+		CBCol(colors.yellow)
+		write(" ")
+	elseif symbol == "5" then
+		CBCol(colors.lime)
+		write(" ")
+	elseif symbol == "6" then
+		CBCol(colors.pink)
+		write(" ")
+	elseif symbol == "7" then
+		CBCol(colors.gray)
+		write(" ")
+	elseif symbol == "8" then
+		CBCol(colors.lightGray)
+		write(" ")
+	elseif symbol == "9" then
+		CBCol(colors.cyan)
+		write(" ")
+	elseif symbol == "a" then
+		CBCol(colors.purple)
+		write(" ")
+	elseif symbol == "b" then
+		CBCol(colors.blue)
+		write(" ")
+	elseif symbol == "c" then
+		CBCol(colors.brown)
+		write(" ")
+	elseif symbol == "d" then
+		CBCol(colors.green)
+		write(" ")
+	elseif symbol == "e" then
+		CBCol(colors.red)
+		write(" ")
+	elseif symbol == "f" then
+		CBCol(colors.black)
+		write(" ")
+	end
+
+end
+
+-- /funkcje
+
+-- inicjalizacja
+
+CBCol(colors.black)
+CTCol(colors.white)
+
+if #argumenty == 0 then
+	print("Wpisz: paint <path>")
+	return
+end
+
+if fs.exists(sciezka) and fs.isDir(sciezka) then
+	print("Nie mozna edytowac folderu")
+	return
+end
+
+-- odczytywanie z pliku
+
+-- jeśli nie istnieje
+	
+if not fs.exists(sciezka) == true then
+
+	local plik = fs.open(sciezka, "w")
+	for x = 1, 18 do
+		plik.writeLine("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+	end
+	plik.close()
+
+end
+	
+local plik = fs.open(sciezka, "r")
+plotno = {}
+for j=1, 18 do
+	temp = plik.readLine()
+	rzad={}
+	for poz in temp:gmatch('.') do
+		rzad[#rzad+1] = poz
+	end
+	plotno[#plotno+1] = rzad
+end
+plik.close()
+
+-- wstepne rysowanie obrazu na ekranie
+
+cs()
+CPos(1,1)
+for y = 1, 18 do
+	pozx, pozy = term.getCursorPos()
+	for x = 1, 52 do
+		rysuj(plotno[y][x])
+	end
+	CPos(1, pozy+1)
+end
+
+-- glowna petla programowa
+
+while true do
+
+	-- rysowanie interfejsu
+	
+	pasek(colors.lightGray)
+	CPos(1,19)
+	write("")
+	
+	-- klikanie na ekran
+	
+	zdarzenie, typ, pozx, pozy = os.pullEvent()
+	
+	if zdarzenie == "mouse_click" or "mouse_drag" then
+		if (pozy >= 1 and pozy <= 18) and (pozx >= 1 and pozx <= 52) then
+			CPos(pozx, pozy)
+			if typ == 1 then
+				CBCol(kolorLPM)
+				write(" ")
+			else
+				CBCol(kolorPPM)
+				write(" ")
+			end
+		elseif pozy == 19 and pozx == 37 then
+			if typ == 1 then
+				kolorLPM = colors.white
+			else
+				kolorPPM = colors.white
+			end
+		elseif pozy == 19 and pozx == 38 then
+			if typ == 1 then
+				kolorLPM = colors.orange
+			else
+				kolorPPM = colors.orange
+			end
+		elseif pozy == 19 and pozx == 39 then
+			if typ == 1 then
+				kolorLPM = colors.magenta
+			else
+				kolorPPM = colors.magenta
+			end
+		elseif pozy == 19 and pozx == 40 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 41 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 42 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 43 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 44 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 45 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 46 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 47 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 48 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 49 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 50 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 51 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		elseif pozy == 19 and pozx == 52 then
+			if typ == 1 then
+				kolorLPM = colors.black
+			else
+				kolorPPM = colors.black
+			end
+		end
+		
+	-- menu pod ctrl
+	elseif zdarzenie == "key" then
+		--if typ == -- ctrl then
+	end
+			
+
+end
+
+-- wyjscie
+
+CBCol(colours.black)
+CTCol(colours.white)
+cs()
+CPos(1,1)
