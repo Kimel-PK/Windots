@@ -1,0 +1,4 @@
+local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+plik.writeLine("GUI")
+plik.close()
+shell.run("/WINDOTS/system64/WCC")
