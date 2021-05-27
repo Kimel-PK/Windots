@@ -1,0 +1,305 @@
+-- odczytanie koloru czcionki (oba) z pliku
+
+local plik = fs.open("/WINDOTS/system64/config/guitextcolor", "r")
+kolorczcipod = tonumber(plik.readLine())
+kolorczcitext = tonumber(plik.readLine())
+plik.close()
+
+-- odczytanie koloru tla (podstawowy) z pliku
+
+local plik = fs.open("/WINDOTS/system64/config/guicolor", "r")
+kolortlapod = tonumber(plik.readLine())
+plik.close()
+
+-- zmienne sterujace
+
+local czystart = false
+local czyprog = false
+local czydok = false
+local czyobr = false
+local czygry = false
+local czyust = false
+local czyzam = false
+
+-- funkcje
+
+-- skrot do pozycji kursora
+
+function CPos(x, y)
+term.setCursorPos(x, y)
+end
+
+-- skrot do koloru tekstu
+
+function CTCol(kolor)
+term.setTextColor(kolor)
+end
+
+-- skrot do koloru tla
+
+function CBCol(kolor)
+term.setBackgroundColor(tonumber(kolor))
+end
+
+-- rysowanie paska dowolnej dlugosci
+
+function pasek(dlugosc, kolor)
+
+  local kursorwyjx, kursorwyjy = term.getCursorPos()
+  for i=1, dlugosc do
+    CBCol(kolor)
+    write(" ")
+  end
+  term.setCursorPos(kursorwyjx, kursorwyjy)
+
+end
+
+-- otworz menu start
+
+function Start()
+
+  CPos(1, 11)
+  pasek(16, kolortlapod)
+  if os.getComputerLabel() ~= nil then
+    CTCol(kolorczcipod)
+    write(os.getComputerLabel())
+    else
+    CTCol(kolorczcipod)
+    write("USER")
+  end
+  CPos(1,12)
+  CTCol(kolorczcitext)
+  CBCol(1)
+  write("Programy       O")
+  CPos(1,13)
+  write("Dokumenty      O")
+  CPos(1,14)
+  write("Obrazy         O")
+  CPos(1,15) 
+  write("Gry            O")
+  CPos(1,16)
+  write("Ustawienia     O")
+  CPos(1,17)
+  write("Wiersz polecen X")
+  CPos(1,18)
+  write("Zamknij system >")
+
+end
+
+-- otorz menu zamykania systemu
+
+function StartZamknij()
+
+  CPos(17,15)
+  CTCol(kolorczcitext)
+  pasek(8, kolortlapod)
+  CBCol(1)
+  CPos(17,16)
+  write(" Wyloguj")
+  CPos(17,17)
+  write(" Restart")
+  CPos(17,18)
+  write(" Zamknij")
+
+end
+
+-- tlumacz linii obrazu na kolory
+
+function tlumaczgraf(linia)
+
+  for i=1, #linia do
+    if linia[i] == "0" then
+      linia[i] = "1"
+    elseif linia[i] == "1" then
+      linia[i] = "2"
+    elseif linia[i] == "2" then
+      linia[i] = "4"
+    elseif linia[i] == "3" then
+      linia[i] = "8"
+    elseif linia[i] == "4" then
+      linia[i] = "16"
+    elseif linia[i] == "5" then
+      linia[i] = "32"
+    elseif linia[i] == "6" then
+      linia[i] = "64"
+    elseif linia[i] == "7" then
+      linia[i] = "128"
+    elseif linia[i] == "8" then
+      linia[i] = "256"
+    elseif linia[i] == "9" then
+      linia[i] = "512"
+    elseif linia[i] == "a" then
+      linia[i] = "1024"
+    elseif linia[i] == "b" then
+      linia[i] = "2048"
+    elseif linia[i] == "c" then
+      linia[i] = "4096"
+    elseif linia[i] == "d" then
+      linia[i] = "8192"
+    elseif linia[i] == "e" then
+      linia[i] = "16384"
+    elseif linia[i] == "f" then
+      linia[i] = "32768"
+    end
+  end
+
+  return linia
+
+end
+
+-- odczyt obrazu z pliku wallpaper
+
+function odczytgraf()
+
+  local plik = fs.open("/WINDOTS/system64/graphic/wallpaper", "r")
+  tapeta={}
+  for j=1, 18 do
+    odczytlinii = plik.readLine()
+    linia={}
+    for poz in odczytlinii:gmatch('.') do
+      linia[#linia+1] = poz
+    end
+    tapeta[#tapeta+1] = tlumaczgraf(linia)
+  end
+  plik.close()
+
+end
+
+-- zamykanie dowolnego menu
+
+function wylacz(yp, yk, xp, xk)
+
+  odczytgraf()
+  for i=yp, yk do
+    for xz=xp, xk do
+      CPos(xz,i)
+      CBCol(tapeta[i][xz])
+      write(" ")
+    end
+  end
+end
+
+-- tapeta
+
+paintutils.drawImage(paintutils.loadImage("/WINDOTS/system64/graphic/wallpaper"), 1, 1)
+
+-- pasek start
+
+CPos(1, 19)
+CBCol(8192)
+CTCol(kolorczcipod)
+write(" Start")
+pasek(45, kolortlapod)
+
+-- glowna petla programowa
+
+while true do
+
+  local zdarzenie, typ, pozx, pozy = os.pullEvent()
+  if zdarzenie == "mouse_click" then -- klikniecie
+
+  -- zdarzenie
+    -- pozycja
+      -- warunki
+    
+  -- start - ignoruje wszystko oprocz czystart
+    if pozy == 19 and pozx <= 6 then
+      if czystart == false then
+          Start()
+          czystart = true
+      else
+          wylacz(11, 18, 1, 17)
+          wylacz(15, 18, 18, 25)
+          czystart = false
+          czyzam = false
+      end
+    elseif pozy == 12 and pozx <= 16 then
+      if czystart == true then
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.write("EXPRO")
+        plik.close()
+        break
+      end
+    elseif pozy == 13 and pozx <= 16 then
+      if czystart == true then
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.write("EXDOK")
+        plik.close()
+        break
+      end
+    elseif pozy == 14 and pozx <= 16 then
+      if czystart == true then
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.write("EXOBR")
+        plik.close()
+        break
+      end
+    elseif pozy == 15 and pozx <= 16 then
+      if czystart == true then
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.write("EXGRY")
+        plik.close()
+        break
+      end
+    elseif pozy == 16 and pozx <= 16 then
+      if czystart == true then
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.writeLine("CFG")
+        plik.close()
+        break
+      end
+    elseif pozy == 17 and pozx <= 16 then
+      if czystart == true then
+        CTCol(16)
+        CBCol(32768)
+        term.clear()
+        CPos(1,1)
+        print("Wiersz polecen systemu Windots")
+        print("Wpisz help aby uzyskac pomoc")
+        print("Uruchom program /powrot aby wrocic do systemu")
+        print(" ")
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.writeLine("CPROMPT")
+        plik.close()
+        break
+      end
+    elseif pozy == 18 and pozx <= 16 then
+      if czystart == true then
+        if czyzam == false then
+          StartZamknij()
+          czyzam = true
+        else
+          wylacz(15, 18, 17, 24)
+          czyzam = false
+        end
+      end
+    elseif pozy == 16 and (pozx == 17 or pozx == 18 or pozx == 19 or pozx == 20 or pozx == 21 or pozx == 22 or pozx == 23 or pozx == 24) then
+      if czyzam == true then
+        wylacz(1, 18, 1, 51)
+        sleep(1)
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.writeLine("LOG")
+        plik.close()
+        break
+      end
+    elseif pozy == 17 and (pozx == 17 or pozx == 18 or pozx == 19 or pozx == 20 or pozx == 21 or pozx == 22 or pozx == 23 or pozx == 24) then
+      if czyzam == true then
+        wylacz(1, 18, 1, 51)
+        sleep(1)
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.writeLine("R")
+        plik.close()
+        break
+      end
+    elseif pozy == 18 and (pozx == 17 or pozx == 18 or pozx == 19 or pozx == 20 or pozx == 21 or pozx == 22 or pozx == 23 or pozx == 24) then
+      if czyzam == true then
+        wylacz(1, 18, 1, 51)
+        sleep(1)
+        local plik = fs.open("/WINDOTS/system64/config/cmd", "w")
+        plik.writeLine("S")
+        plik.close()
+        break
+      end
+    end
+  end
+end

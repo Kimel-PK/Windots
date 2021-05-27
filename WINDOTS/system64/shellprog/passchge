@@ -1,0 +1,35 @@
+local plik = fs.open("/WINDOTS/system64/config/Pkey", "r")
+local key = plik.readLine()
+plik.close()
+
+local chksum = 0
+      
+Tkey = {}
+for poz in key:gmatch('.') do
+  Tkey[#Tkey+1] = poz
+end
+
+local podpasswd = read()
+tabelapasswd = {}
+for poz in podpasswd:gmatch('.') do
+  tabelapasswd[#tabelapasswd+1] = poz
+end
+for znak=1, #tabelapasswd do
+  local temp = string.byte(tabelapasswd[znak])
+  if znak % #Tkey == 0 then
+    temp = temp + string.byte(Tkey[#Tkey])
+  else
+    temp = temp + string.byte(Tkey[znak%#Tkey])
+  end
+  temp = temp % 127
+  temp = temp + 33
+  if znak % 2 == 0 then
+    chksum = chksum + temp
+  else
+    chksum = chksum - temp
+  end
+end
+
+local plik = fs.open("/WINDOTS/system64/conupdate/passwd", "w")
+plik.writeLine(tostring(chksum))
+plik.close()
