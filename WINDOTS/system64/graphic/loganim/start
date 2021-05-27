@@ -1,0 +1,13 @@
+function play(a,b,czas)
+for i=a, b do
+term.setBackgroundColor(colors.lightBlue)
+term.clear()
+a = tostring(i)
+klatka = "/WINDOTS/system64/graphic/loganim/fr"..a
+paintutils.drawImage(paintutils.loadImage(klatka),1 ,1)
+sleep(czas)
+end
+end
+
+play(1,26,0.1)
+play(27,72,0.01)

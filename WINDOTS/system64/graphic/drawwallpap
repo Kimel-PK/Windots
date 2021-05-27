@@ -1,0 +1,1 @@
+paintutils.drawImage(paintutils.loadImage("/WINDOTS/system64/graphic/wallpaper"), 1, 1)
