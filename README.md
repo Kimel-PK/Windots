@@ -3,3 +3,5 @@ Projekt systemu operacyjnego działającego w Minecracie 1.4.6 na modzie Compute
 
 Szybka prezentacja wyglądu i działania systemu:
 https://youtu.be/A1LzZSR8MVw
+
+Przykładowe pliki zostały dodane aby zachować strukturę potrzebną do działania (GitHub nie pozwala na puste foldery)
