@@ -11,7 +11,7 @@ Przykładowe pliki zostały dodane aby zachować strukturę potrzebną do dział
 Aby uruchomić projekt należy wrzucić wszytkie pliki do folderu:
 
 ```
-%appdata%\Roaming\.minecraft\saves\<nazwa śwaita>\computer\<id komputera\
+%appdata%\Roaming\.minecraft\saves\<nazwa świata>\computer\<id komputera\
 ```
 
 Uwaga! Folder z id komputera nie powstanie jeśli nie utworzyliśmy wcześniej ani jednego własnego pliku, folder można utworzyć ręcznie jeśli znamy IP postawionego komputera, musimy użyć "Advanced computer"!
