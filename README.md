@@ -5,7 +5,7 @@ Szybka prezentacja wyglądu i działania systemu:
 
 https://user-images.githubusercontent.com/57668948/143264674-ea47f026-88dd-4310-91ad-1a5de21d7c1f.mp4
 
-Przykładowe pliki zostały dodane aby zachować strukturę potrzebną do działania (GitHub nie pozwala na puste foldery)
+> Przykładowe pliki zostały dodane aby zachować strukturę potrzebną do działania (GitHub nie pozwala na puste foldery)
 
 ## Uruchamianie
 
