@@ -1,7 +1,9 @@
 # Windots
 Projekt systemu operacyjnego działającego w Minecracie 1.4.6 na modzie Computer Craft w wersji 1.48
 
-Szybka prezentacja wyglądu i działania systemu: [Kliknij tutaj](https://youtu.be/A1LzZSR8MVw)
+Szybka prezentacja wyglądu i działania systemu:
+
+https://user-images.githubusercontent.com/57668948/143264674-ea47f026-88dd-4310-91ad-1a5de21d7c1f.mp4
 
 Przykładowe pliki zostały dodane aby zachować strukturę potrzebną do działania (GitHub nie pozwala na puste foldery)
 
